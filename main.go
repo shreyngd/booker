@@ -6,18 +6,25 @@ import (
 	"github.com/shreyngd/booker/controller"
 )
 
-
 func main() {
 	r := gin.Default()
-	r.GET("/test", handleFunc)
+
 	c := controller.NewController()
 
 	v1 := r.Group("/api/v1")
+	v1.GET("/test", handleFunc)
 	{
-		books:= v1.Group("/books")
+		books := v1.Group("/books")
 		{
-			books.GET("/",c.GetBooks)
-			books.POST("/",c.PutBooks)
+			books.GET("/", c.GetBooks)
+			books.POST("/", c.PutBooks)
+		}
+		auth := v1.Group("/auth")
+		{
+			auth.POST("/login", c.Login)
+			auth.POST("/signup", c.Signup)
+			auth.GET("/google", c.Login)
+			auth.GET("/google/callback", c.Login)
 		}
 
 	}

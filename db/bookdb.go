@@ -12,7 +12,7 @@ import (
 )
 
 // collection of books
-var collection = helper.ConnectDB()
+var collection = helper.ConnectDB().Collection("books")
 
 
 //List all books in db
