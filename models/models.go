@@ -5,6 +5,7 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"golang.org/x/oauth2"
 )
 
 //Create Struct
@@ -29,12 +30,25 @@ type User struct {
 	Created_at    time.Time          `json:"created_at"`
 	Updated_at    time.Time          `json:"updated_at"`
 	User_id       string             `json:"user_id"`
+	GoogleToken   *oauth2.Token      `json:"googletoken"`
 }
 
 type SignedDetails struct {
-	Email      string
-	First_name string
-	Last_name  string
-	Uid        string
+	Email       string
+	Uid         string
+	FirstName   string
+	LastName    string
+	GoogleToken *oauth2.Token
 	jwt.StandardClaims
+}
+
+type GoogleAuthResponse struct {
+	ID            string `json:"id"`
+	Email         string `json:"email"`
+	VerifiedEmail bool   `json:"verified_email"`
+	Name          string `json:"name"`
+	GivenName     string `json:"given_name"`
+	FamilyName    string `json:"family_name"`
+	Picture       string `json:"picture"`
+	Locale        string `json:"locale"`
 }

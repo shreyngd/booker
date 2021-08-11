@@ -12,6 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"golang.org/x/crypto/bcrypt"
+	"golang.org/x/oauth2"
 )
 
 var collectionUser = helper.ConnectDB().Collection("users")
@@ -82,6 +83,42 @@ func UpdateUserByID(token string, refresh string, id string) (models.User, error
 	opt := options.FindOneAndUpdateOptions{
 		Upsert: &upsert,
 	}
+	opt.SetReturnDocument(options.After)
+	var updatedUser models.User
+
+	err := collectionUser.FindOneAndUpdate(
+		context.TODO(),
+		filter,
+		bson.D{
+			{"$set", updateObj},
+		},
+		&opt,
+	).Decode(&updatedUser)
+
+	fmt.Println(updatedUser)
+
+	return updatedUser, err
+}
+
+func UpdateUserByIDAndGoogleToken(token string, refresh string, gToken *oauth2.Token, id string) (models.User, error) {
+	var updateObj primitive.D
+	updateObj = append(updateObj, bson.E{"token", token})
+	updateObj = append(updateObj, bson.E{"refresh_token", refresh})
+	updateObj = append(updateObj, bson.E{"googletoken", *gToken})
+
+	Updated_at, _ := time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+	updateObj = append(updateObj, bson.E{"updated_at", Updated_at})
+	upsert := true
+	filter := bson.M{"user_id": id}
+	opt := options.FindOneAndUpdateOptions{
+		Upsert: &upsert,
+	}
+	opt.SetProjection(bson.D{
+		{"email", 1},
+		{"token", 1},
+		{"googletoken", 1},
+	})
+
 	opt.SetReturnDocument(options.After)
 	var updatedUser models.User
 

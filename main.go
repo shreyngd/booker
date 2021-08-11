@@ -23,8 +23,8 @@ func main() {
 		{
 			auth.POST("/login", c.Login)
 			auth.POST("/signup", c.Signup)
-			auth.GET("/google", c.Login)
-			auth.GET("/google/callback", c.Login)
+			auth.GET("/google", c.LoginGoogle)
+			auth.GET("/google/callback", c.CallbackGoogle)
 		}
 
 	}

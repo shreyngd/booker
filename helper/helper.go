@@ -2,6 +2,8 @@ package helper
 
 import (
 	"context"
+	"crypto/rand"
+	"encoding/base64"
 	"fmt"
 	"log"
 	"os"
@@ -77,16 +79,21 @@ func ValidateToken(signedToken string) (claims *models.SignedDetails, msg string
 
 	claims, ok := token.Claims.(*models.SignedDetails)
 	if !ok {
-		msg = fmt.Sprintf("the token is invalid")
 		msg = err.Error()
 		return
 	}
 
 	if claims.ExpiresAt < time.Now().Local().Unix() {
-		msg = fmt.Sprintf("token is expired")
 		msg = err.Error()
 		return
 	}
 
 	return claims, msg
+}
+
+func GetRandomState() string {
+	b := make([]byte, 16)
+	rand.Read(b)
+	state := base64.URLEncoding.EncodeToString(b)
+	return state
 }
