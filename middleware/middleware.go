@@ -26,7 +26,6 @@ func Authentication() gin.HandlerFunc {
 		}
 		c.Set("email", claims.Email)
 		c.Set("uid", claims.Uid)
-		c.Set("gToken", claims.GoogleToken)
 		c.Next()
 
 	}

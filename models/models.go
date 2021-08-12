@@ -34,11 +34,8 @@ type User struct {
 }
 
 type SignedDetails struct {
-	Email       string
-	Uid         string
-	FirstName   string
-	LastName    string
-	GoogleToken *oauth2.Token
+	Email string
+	Uid   string
 	jwt.StandardClaims
 }
 
