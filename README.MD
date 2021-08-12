@@ -1,11 +1,36 @@
-# Foobar
+# Interview Slot Booking
 
-Foobar is a Python library for dealing with word pluralization.
+A REST API written in Golang for booking interview slots for employees.
 
-## Installation
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
+# Tools and libs
+[Gin](https://github.com/gin-gonic/gin) 
+[Mongo](https://github.com/mongodb/mongo-go-driver)
+[JWT Auth](https://github.com/dgrijalva/jwt-go)
+[OAuth2](https://github.com/golang/oauth2)
+[WebSockets](https://github.com/gorilla/websocket)
 
+# Getting Started
+
+1) **Install Dependencies**
 ```bash
-pip install foobar
+git clone https://github.com/shreyngd/booker.git
+cd booker
+make deps
+cp .env.example .env
 ```
+2) **Enter environment variables**
+```
+MONGO_URI="..."
+SECRET_KEY="..."
+GOOGLE_CLIENT_ID="..."
+GOOGLE_CLIENT_SECRET="..."
+GOOGLE_REDIRECT_URI="..."
+....
+```
+
+3) **Run**
+```
+make run
+```
+
