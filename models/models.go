@@ -30,12 +30,14 @@ type User struct {
 	Created_at    time.Time          `json:"created_at"`
 	Updated_at    time.Time          `json:"updated_at"`
 	User_id       string             `json:"user_id"`
+	Role          string             `json:"role"`
 	GoogleToken   *oauth2.Token      `json:"googletoken"`
 }
 
 type SignedDetails struct {
 	Email string
 	Uid   string
+	Role  string
 	jwt.StandardClaims
 }
 
@@ -48,4 +50,12 @@ type GoogleAuthResponse struct {
 	FamilyName    string `json:"family_name"`
 	Picture       string `json:"picture"`
 	Locale        string `json:"locale"`
+}
+
+type InterviewRoom struct {
+	ID         primitive.ObjectID `bson:"_id"`
+	Name       *string            `json:"name" validate:"name,required"`
+	Created_at time.Time          `json:"created_at"`
+	Updated_at time.Time          `json:"updated_at"`
+	Active     bool               `json:"is_active"`
 }

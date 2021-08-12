@@ -116,7 +116,7 @@ func UpdateUserByIDAndGoogleToken(token string, refresh string, gToken *oauth2.T
 	opt.SetProjection(bson.D{
 		{"email", 1},
 		{"token", 1},
-		{"googletoken", 1},
+		{"role", 1},
 	})
 
 	opt.SetReturnDocument(options.After)

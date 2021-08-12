@@ -15,7 +15,7 @@ clean:
 	rm -f $(BINARY_NAME)
 	rm -f $(BINARY_UNIX)
 run:
-	reflex -r '\.go' -s -- sh -c "go run main.go"
+	reflex -r '\.go' -s -- sh -c "go run *.go"
 deps:
 	go get github.com/cespare/reflex
 	go get -d ./...

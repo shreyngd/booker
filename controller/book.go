@@ -9,9 +9,8 @@ import (
 )
 
 // Get all Books controller
-func (c *Controller) GetBooks(ctx  *gin.Context){
+func (c *Controller) GetBooks(ctx *gin.Context) {
 	books, err := db.GetBooks()
-	
 
 	if err != nil {
 		ctx.JSON(http.StatusBadGateway, gin.H{
@@ -22,31 +21,31 @@ func (c *Controller) GetBooks(ctx  *gin.Context){
 	if len(books) == 0 {
 		ctx.JSON(http.StatusOK, gin.H{
 			"status": -3,
-			"data": books,
+			"data":   books,
 		})
 		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{
 		"status": 0,
-		"data": books,
+		"data":   books,
 	})
 }
 
 //Insert Many Books in the db
-func (c *Controller) PutBooks(ctx *gin.Context){
+func (c *Controller) PutBooks(ctx *gin.Context) {
 	var books []models.Book
 	if err := ctx.ShouldBindJSON(&books); err != nil {
-		ctx.JSON(http.StatusBadRequest,gin.H{
+		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": err,
 		})
 		return
 	}
-	if len(books) == 0{
+	if len(books) == 0 {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"data": gin.H{
 				"error": "books are empty",
 			},
-		})	
+		})
 	}
 	count, err := db.PutBooks(books)
 	if err != nil {
@@ -55,7 +54,7 @@ func (c *Controller) PutBooks(ctx *gin.Context){
 			"data": gin.H{
 				"error": err,
 			},
-		})		
+		})
 		return
 	}
 	ctx.JSON(http.StatusOK, gin.H{

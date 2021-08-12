@@ -5,6 +5,7 @@ import (
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/shreyngd/booker/controller"
 	"github.com/shreyngd/booker/middleware"
+	slotserver "github.com/shreyngd/booker/slotServer"
 )
 
 func main() {
@@ -13,8 +14,14 @@ func main() {
 	c := controller.NewController()
 
 	v1 := r.Group("/api/v1")
-	v1.GET("/test", handleFunc)
 
+	wsServer := slotserver.NewWebsocketServer()
+	go wsServer.Run()
+
+	v1.GET("/ws", func(c *gin.Context) {
+		slotserver.ServeWs(wsServer, c.Writer, c.Request)
+	})
+	v1.GET("/test", handleFunc)
 	auth := v1.Group("/auth")
 	{
 		auth.POST("/login", c.Login)

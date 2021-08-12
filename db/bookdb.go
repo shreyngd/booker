@@ -14,16 +14,15 @@ import (
 // collection of books
 var collection = helper.ConnectDB().Collection("books")
 
-
 //List all books in db
-func GetBooks() ([]models.Book,error){
+func GetBooks() ([]models.Book, error) {
 
 	var books []models.Book
 
 	cur, err := collection.Find(context.TODO(), bson.M{})
-	
+
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 
 	defer cur.Close(context.TODO())
@@ -45,19 +44,19 @@ func GetBooks() ([]models.Book,error){
 		log.Fatal(err)
 	}
 
-	return books,nil
+	return books, nil
 }
 
-func PutBooks(books []models.Book) (int,error){
+func PutBooks(books []models.Book) (int, error) {
 	for i := range books {
 		books[i].ID = primitive.NewObjectID()
 	}
-	c,_ := json.Marshal(books)
+	c, _ := json.Marshal(books)
 	var b = []interface{}{}
 	json.Unmarshal(c, &b)
-	result, err := collection.InsertMany(context.TODO(),b)
+	result, err := collection.InsertMany(context.TODO(), b)
 	if err != nil {
 		return -1, err
 	}
-	return len(result.InsertedIDs),nil
+	return len(result.InsertedIDs), nil
 }

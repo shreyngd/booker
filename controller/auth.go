@@ -108,6 +108,7 @@ func (con *Controller) Signup(c *gin.Context) {
 	token, refreshToken, _ := helper.GenerateAllTokens(*user.Email, user.User_id)
 	user.Token = &token
 	user.Refresh_token = &refreshToken
+	user.Role = "Interviewer"
 	_, insertErr := db.InsertUser(&user)
 	if insertErr != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "user item was not created"})
@@ -190,6 +191,7 @@ func (con *Controller) CallbackGoogle(ctx *gin.Context) {
 		userCreate.Token = &tokenSend
 		userCreate.Refresh_token = &refreshToken
 		userCreate.GoogleToken = token
+		userCreate.Role = "Interviewer"
 		_, insertErr := db.InsertUser(&userCreate)
 		if insertErr != nil {
 			ctx.JSON(http.StatusInternalServerError, gin.H{"error": "user item was not created"})
