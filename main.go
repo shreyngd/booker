@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/shreyngd/booker/controller"
+	"github.com/shreyngd/booker/middleware"
 )
 
 func main() {
@@ -13,21 +14,22 @@ func main() {
 
 	v1 := r.Group("/api/v1")
 	v1.GET("/test", handleFunc)
+
+	auth := v1.Group("/auth")
 	{
-		books := v1.Group("/books")
-		{
-			books.GET("/", c.GetBooks)
-			books.POST("/", c.PutBooks)
-		}
-		auth := v1.Group("/auth")
-		{
-			auth.POST("/login", c.Login)
-			auth.POST("/signup", c.Signup)
-			auth.GET("/google", c.LoginGoogle)
-			auth.GET("/google/callback", c.CallbackGoogle)
-		}
+		auth.POST("/login", c.Login)
+		auth.POST("/signup", c.Signup)
+		auth.GET("/google", c.LoginGoogle)
+		auth.GET("/google/callback", c.CallbackGoogle)
 
 	}
+	v1.Use(middleware.Authentication())
+	books := v1.Group("/books")
+	{
+		books.GET("/", c.GetBooks)
+		books.POST("/", c.PutBooks)
+	}
+
 	r.Run("localhost:8080") // listen and serve on 0.0.0.0:8080
 }
 
