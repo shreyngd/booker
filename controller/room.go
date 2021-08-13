@@ -33,12 +33,8 @@ func (c *Controller) AddRoom(ctx *gin.Context) {
 		})
 		return
 	}
-
-	go func() {
-		gb := models.GetInstanceGlobal()
-		gb.Channel <- *room.Name
-	}()
-
+	gb := models.GetInstanceGlobal()
+	gb.Channel <- *room.Name
 	ctx.JSON(http.StatusCreated, gin.H{
 		"data": "Room Created Successfully",
 	})
