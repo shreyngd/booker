@@ -105,7 +105,7 @@ func ServeWs(wsServer *WsServer, w http.ResponseWriter, r *http.Request) {
 
 	roomsFromDB, _ := db.GetAllRooms()
 	for room := range roomsFromDB {
-		wsServer.CreateRoom(*roomsFromDB[room].Name)
+		wsServer.createRoom(*roomsFromDB[room].Name)
 	}
 	client := newClient(conn, wsServer, name[0])
 
@@ -199,7 +199,7 @@ func (client *Client) handleJoinRoomMessage(message Message) {
 
 	room := client.wsServer.findRoomByName(roomName)
 	if room == nil {
-		room = client.wsServer.CreateRoom(roomName)
+		room = client.wsServer.createRoom(roomName)
 	}
 
 	client.rooms[room] = true

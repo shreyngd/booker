@@ -1,5 +1,7 @@
 package slotserver
 
+import "github.com/shreyngd/booker/models"
+
 type WsServer struct {
 	clients    map[*Client]bool
 	register   chan *Client
@@ -20,6 +22,7 @@ func NewWebsocketServer() *WsServer {
 
 // Run our websocket server, accepting various requests
 func (server *WsServer) Run() {
+	gb := *models.GetInstanceGlobal()
 	for {
 		select {
 
@@ -30,6 +33,8 @@ func (server *WsServer) Run() {
 			server.unregisterClient(client)
 		case message := <-server.broadcast:
 			server.broadcastToClient(message)
+		case message := <-gb.Channel:
+			server.createRoomAndBroadCast(message)
 		}
 
 	}
@@ -62,9 +67,29 @@ func (server *WsServer) findRoomByName(name string) *Room {
 	return foundRoom
 }
 
-func (server *WsServer) CreateRoom(name string) *Room {
+func (server *WsServer) createRoom(name string) *Room {
 	room := NewRoom(name)
 	go room.RunRoom()
 	server.rooms[room] = true
 	return room
+}
+
+func (server *WsServer) createRoomAndBroadCast(name string) {
+	room := server.createRoom(name)
+	var roomList []string
+	for r := range server.rooms {
+		roomList = append(roomList, r.GetName())
+	}
+
+	addRoomReply := models.AddRoomReply{
+		RoomList:  roomList,
+		AddedRoom: room.GetName(),
+	}
+
+	addReply := MessageAddRoom{
+		Data:   addRoomReply,
+		Action: "room-add-success",
+	}
+
+	server.broadcast <- addReply.encode()
 }

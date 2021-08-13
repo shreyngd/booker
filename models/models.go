@@ -59,3 +59,18 @@ type InterviewRoom struct {
 	Updated_at time.Time          `json:"updated_at"`
 	Active     bool               `json:"is_active"`
 }
+
+type AddRoomReply struct {
+	RoomList  []string `json:"room_list"`
+	AddedRoom string   `json:"added_room_name"`
+}
+
+type GlobalChannel struct {
+	Channel chan string
+}
+
+func GetInstanceGlobal() *GlobalChannel {
+	return &GlobalChannel{
+		Channel: make(chan string),
+	}
+}

@@ -8,7 +8,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/shreyngd/booker/db"
 	"github.com/shreyngd/booker/models"
-	slotserver "github.com/shreyngd/booker/slotServer"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -35,9 +34,13 @@ func (c *Controller) AddRoom(ctx *gin.Context) {
 		return
 	}
 
-	wsServer := slotserver.NewWebsocketServer()
-	wsServer.CreateRoom(*room.Name)
+	go func() {
+		gb := models.GetInstanceGlobal()
+		gb.Channel <- *room.Name
+	}()
+
 	ctx.JSON(http.StatusCreated, gin.H{
 		"data": "Room Created Successfully",
 	})
+
 }
