@@ -36,6 +36,10 @@ func main() {
 		books.GET("/", c.GetBooks)
 		books.POST("/", c.PutBooks)
 	}
+	rooms := v1.Group("/room")
+	{
+		rooms.POST("/", c.AddRoom)
+	}
 
 	r.Run("localhost:8080") // listen and serve on 0.0.0.0:8080
 }

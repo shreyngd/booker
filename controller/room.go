@@ -1,10 +1,15 @@
 package controller
 
 import (
+	"log"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/shreyngd/booker/db"
 	"github.com/shreyngd/booker/models"
+	slotserver "github.com/shreyngd/booker/slotServer"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func (c *Controller) AddRoom(ctx *gin.Context) {
@@ -16,4 +21,23 @@ func (c *Controller) AddRoom(ctx *gin.Context) {
 		return
 	}
 
+	room.Created_at, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+	room.Updated_at, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+	room.ID = primitive.NewObjectID()
+	room.Active = true
+
+	log.Println(room, "room")
+
+	if err := db.CreateRoom(&room); err != nil {
+		ctx.JSON(http.StatusBadGateway, gin.H{
+			"data": err,
+		})
+		return
+	}
+
+	wsServer := slotserver.NewWebsocketServer()
+	wsServer.CreateRoom(*room.Name)
+	ctx.JSON(http.StatusCreated, gin.H{
+		"data": "Room Created Successfully",
+	})
 }

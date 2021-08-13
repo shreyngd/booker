@@ -42,6 +42,7 @@ func GetBooks() ([]models.Book, error) {
 
 	if err := cur.Err(); err != nil {
 		log.Fatal(err)
+		return nil, err
 	}
 
 	return books, nil
