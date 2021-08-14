@@ -24,16 +24,11 @@ func GetAllRooms() ([]models.InterviewRoom, error) {
 	}
 	defer cur.Close(context.TODO())
 	for cur.Next(context.TODO()) {
-
-		// create a value into which the single document can be decoded
 		var room models.InterviewRoom
-		// & character returns the memory address of the following variable.
-		err := cur.Decode(&room) // decode similar to deserialize process.
+		err := cur.Decode(&room)
 		if err != nil {
 			log.Fatal(err)
 		}
-
-		// add item our array
 		rooms = append(rooms, room)
 	}
 	if err := cur.Err(); err != nil {

@@ -48,9 +48,8 @@ func (room *Room) registerClientInRoom(client *Client) {
 }
 
 func (room *Room) unregisterClientInRoom(client *Client) {
-	if _, ok := room.clients[client]; ok {
-		delete(room.clients, client)
-	}
+	delete(room.clients, client)
+
 }
 
 func (room *Room) broadcastToClientsInRoom(message []byte) {

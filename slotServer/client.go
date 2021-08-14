@@ -27,7 +27,6 @@ const (
 
 var (
 	newline = []byte{'\n'}
-	space   = []byte{' '}
 )
 
 var upgrader = websocket.Upgrader{
@@ -206,9 +205,7 @@ func (client *Client) handleJoinRoomMessage(message Message) {
 
 func (client *Client) handleLeaveRoomMessage(message Message) {
 	room := client.wsServer.findRoomByName(message.Message)
-	if _, ok := client.rooms[room]; ok {
-		delete(client.rooms, room)
-	}
+	delete(client.rooms, room)
 	room.unregister <- client
 }
 
