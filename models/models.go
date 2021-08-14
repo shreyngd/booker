@@ -69,8 +69,13 @@ type GlobalChannel struct {
 	Channel chan string
 }
 
+var gb *GlobalChannel
+
 func GetInstanceGlobal() *GlobalChannel {
-	return &GlobalChannel{
-		Channel: make(chan string),
+	if gb == nil {
+		gb = &GlobalChannel{
+			Channel: make(chan string, 1000),
+		}
 	}
+	return gb
 }

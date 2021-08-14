@@ -1,6 +1,8 @@
 package slotserver
 
-import "github.com/shreyngd/booker/models"
+import (
+	"github.com/shreyngd/booker/models"
+)
 
 type WsServer struct {
 	clients    map[*Client]bool
@@ -13,9 +15,9 @@ type WsServer struct {
 func NewWebsocketServer() *WsServer {
 	return &WsServer{
 		clients:    make(map[*Client]bool),
-		register:   make(chan *Client),
-		unregister: make(chan *Client),
-		broadcast:  make(chan []byte),
+		register:   make(chan *Client, 100),
+		unregister: make(chan *Client, 100),
+		broadcast:  make(chan []byte, 1000),
 		rooms:      make(map[*Room]bool),
 	}
 }
@@ -28,7 +30,6 @@ func (server *WsServer) Run() {
 
 		case client := <-server.register:
 			server.registerClient(client)
-
 		case client := <-server.unregister:
 			server.unregisterClient(client)
 		case message := <-server.broadcast:
@@ -75,6 +76,7 @@ func (server *WsServer) createRoom(name string) *Room {
 }
 
 func (server *WsServer) createRoomAndBroadCast(name string) {
+
 	room := server.createRoom(name)
 	var roomList []string
 	for r := range server.rooms {

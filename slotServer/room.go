@@ -15,9 +15,9 @@ func NewRoom(name string) *Room {
 	return &Room{
 		name:       name,
 		clients:    make(map[*Client]bool),
-		register:   make(chan *Client),
-		unregister: make(chan *Client),
-		broadcast:  make(chan *Message),
+		register:   make(chan *Client, 100),
+		unregister: make(chan *Client, 100),
+		broadcast:  make(chan *Message, 1000),
 	}
 }
 

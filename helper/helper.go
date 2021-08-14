@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/rand"
 	"encoding/base64"
-	"fmt"
 	"log"
 	"os"
 	"time"
@@ -19,9 +18,7 @@ var SECRET_KEY string = os.Getenv("SECRET_KEY")
 
 // ConnectDB : This is helper function to connect mongoDB
 func ConnectDB() *mongo.Database {
-	fmt.Print(os.Getenv("MONGO_URI"))
 	clientOpts := options.Client().ApplyURI(os.Getenv("MONGO_URI"))
-
 	client, err := mongo.Connect(context.TODO(), clientOpts)
 
 	if err != nil {

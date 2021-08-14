@@ -2,7 +2,6 @@ package slotserver
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -113,8 +112,6 @@ func ServeWs(wsServer *WsServer, w http.ResponseWriter, r *http.Request) {
 	go client.readPump()
 
 	wsServer.register <- client
-
-	fmt.Println(client.conn.RemoteAddr())
 }
 
 func (client *Client) writePump() {

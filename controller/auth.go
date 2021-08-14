@@ -3,7 +3,6 @@ package controller
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"net/url"
@@ -33,7 +32,6 @@ var (
 			"https://www.googleapis.com/auth/calendar"},
 		Endpoint: google.Endpoint,
 	}
-	oauthStateStringGl = ""
 )
 
 // Login handler for uname and password
@@ -172,7 +170,6 @@ func (con *Controller) CallbackGoogle(ctx *gin.Context) {
 	googleResponse := models.GoogleAuthResponse{}
 	err = json.NewDecoder(resp.Body).Decode(&googleResponse)
 	if err != nil {
-		fmt.Println(err)
 		ctx.JSON(http.StatusBadGateway, gin.H{
 			"data": err,
 		})
@@ -205,7 +202,6 @@ func (con *Controller) CallbackGoogle(ctx *gin.Context) {
 	}
 	tokenSend, refreshToken, _ := helper.GenerateAllTokens(*u.Email, u.User_id)
 	updatedUser, err := db.UpdateUserByIDAndGoogleToken(tokenSend, refreshToken, token, u.User_id)
-	fmt.Println(updatedUser)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"data": "error occured while logging in",

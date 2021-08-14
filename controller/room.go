@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"log"
 	"net/http"
 	"time"
 
@@ -25,16 +24,18 @@ func (c *Controller) AddRoom(ctx *gin.Context) {
 	room.ID = primitive.NewObjectID()
 	room.Active = true
 
-	log.Println(room, "room")
-
 	if err := db.CreateRoom(&room); err != nil {
 		ctx.JSON(http.StatusBadGateway, gin.H{
 			"data": err,
 		})
 		return
 	}
-	gb := models.GetInstanceGlobal()
-	gb.Channel <- *room.Name
+
+	go func() {
+		gb := *models.GetInstanceGlobal()
+		gb.Channel <- *room.Name
+	}()
+
 	ctx.JSON(http.StatusCreated, gin.H{
 		"data": "Room Created Successfully",
 	})

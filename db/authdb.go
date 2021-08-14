@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"time"
 
@@ -34,7 +33,7 @@ func VerifyPassword(userPassword string, providedPassword string) (bool, string)
 	msg := ""
 
 	if err != nil {
-		msg = fmt.Sprintf("login or passowrd is incorrect")
+		msg = "login or passowrd is incorrect"
 		check = false
 	}
 
@@ -63,7 +62,6 @@ func InsertUser(u *models.User) (interface{}, error) {
 func FindUserByEmail(ctx context.Context, email *string) (models.User, error) {
 	var foundUser models.User
 	err := collectionUser.FindOne(ctx, bson.M{"email": email}).Decode(&foundUser)
-	fmt.Println(foundUser)
 	if err != nil {
 		return foundUser, err
 	}
@@ -73,11 +71,11 @@ func FindUserByEmail(ctx context.Context, email *string) (models.User, error) {
 // Update user
 func UpdateUserByID(token string, refresh string, id string) (models.User, error) {
 	var updateObj primitive.D
-	updateObj = append(updateObj, bson.E{"token", token})
-	updateObj = append(updateObj, bson.E{"refresh_token", refresh})
+	updateObj = append(updateObj, bson.E{Key: "token", Value: token})
+	updateObj = append(updateObj, bson.E{Key: "refresh_token", Value: refresh})
 
 	Updated_at, _ := time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
-	updateObj = append(updateObj, bson.E{"updated_at", Updated_at})
+	updateObj = append(updateObj, bson.E{Key: "updated_at", Value: Updated_at})
 	upsert := true
 	filter := bson.M{"user_id": id}
 	opt := options.FindOneAndUpdateOptions{
@@ -90,33 +88,31 @@ func UpdateUserByID(token string, refresh string, id string) (models.User, error
 		context.TODO(),
 		filter,
 		bson.D{
-			{"$set", updateObj},
+			{Key: "$set", Value: updateObj},
 		},
 		&opt,
 	).Decode(&updatedUser)
-
-	fmt.Println(updatedUser)
 
 	return updatedUser, err
 }
 
 func UpdateUserByIDAndGoogleToken(token string, refresh string, gToken *oauth2.Token, id string) (models.User, error) {
 	var updateObj primitive.D
-	updateObj = append(updateObj, bson.E{"token", token})
-	updateObj = append(updateObj, bson.E{"refresh_token", refresh})
-	updateObj = append(updateObj, bson.E{"googletoken", *gToken})
+	updateObj = append(updateObj, bson.E{Key: "token", Value: token})
+	updateObj = append(updateObj, bson.E{Key: "refresh_token", Value: refresh})
+	updateObj = append(updateObj, bson.E{Key: "googletoken", Value: *gToken})
 
 	Updated_at, _ := time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
-	updateObj = append(updateObj, bson.E{"updated_at", Updated_at})
+	updateObj = append(updateObj, bson.E{Key: "updated_at", Value: Updated_at})
 	upsert := true
 	filter := bson.M{"user_id": id}
 	opt := options.FindOneAndUpdateOptions{
 		Upsert: &upsert,
 	}
 	opt.SetProjection(bson.D{
-		{"email", 1},
-		{"token", 1},
-		{"role", 1},
+		{Key: "email", Value: 1},
+		{Key: "token", Value: 1},
+		{Key: "role", Value: 1},
 	})
 
 	opt.SetReturnDocument(options.After)
@@ -126,12 +122,10 @@ func UpdateUserByIDAndGoogleToken(token string, refresh string, gToken *oauth2.T
 		context.TODO(),
 		filter,
 		bson.D{
-			{"$set", updateObj},
+			{Key: "$set", Value: updateObj},
 		},
 		&opt,
 	).Decode(&updatedUser)
-
-	fmt.Println(updatedUser)
 
 	return updatedUser, err
 }
